@@ -16,7 +16,28 @@ permissions and limitations under the License.
 This product includes software developed at data.world, Inc.
 https://data.world"
 
-library(testthat)
-library(data.world)
+.onLoad <- function(...) {
+  op <- options()
+  op.dw <-
+    list(dw.config_path = path.expand(file.path("~", ".dw", "config")))
 
-test_check("data.world")
+  toset <- !(names(op.dw) %in% names(op))
+  if (any(toset))
+    options(op.dw[toset])
+
+  invisible()
+}
+
+.onAttach <- function(...) {
+  # Load dwapi as a result of data.world being attached
+  if (is_attached("dwapi"))
+    return()
+
+  lapply(c("dwapi"), library, character.only = TRUE, warn.conflicts = FALSE)
+
+  invisible()
+}
+
+is_attached <- function(x) {
+  paste0("package:", x) %in% search()
+}
