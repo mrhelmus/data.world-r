@@ -25,9 +25,75 @@ https://data.world"
 #' @docType package
 #' @section Details:
 #' \tabular{ll}{
-#'    \code{query.data.world} \tab is now \code{\link{query.sql}}\cr
+#'    \code{query.data.world} \tab is now \code{\link{query}}\cr
 #' }
 NULL
+
+#' data.world client constructor
+#' @param propsfile a properties file containing configuration for your data.world client (defaults to ~/.data.world)
+#' @param token your data.world API token (optional, if not present, will be read from properties file)
+#' @param baseDWApiUrl data.world public api
+#' @param baseQueryApiUrl data.world query api
+#' @param baseDownloadApiUrl data.world download api
+#' @return a data.world client
+#' @seealso \code{\link{query}}
+#' @examples
+#' connection1 <- data.world(token = "YOUR_API_TOKEN_HERE")
+#' @name data.world-deprecated
+#' @rdname data.world-deprecated
+#' @export
+data.world <- function(token = NULL,
+  propsfile = sprintf("%s/.data.world", path.expand("~")),
+  baseDWApiUrl = "https://api.data.world/v0/",
+  baseQueryApiUrl = "https://query.data.world/",
+  baseDownloadApiUrl = "https://download.data.world") {
+  .Deprecated("data.world::configure", "data.world")
+
+  is.nothing <- function(x)
+    is.null(x) || is.na(x) || is.nan(x)
+
+  if (file.exists(propsfile)) {
+    props <-
+      utils::read.table(
+        propsfile,
+        header = FALSE,
+        sep = "=",
+        row.names = 1,
+        strip.white = TRUE,
+        na.strings = "NA",
+        stringsAsFactors = FALSE
+      )
+  } else {
+    props <- data.frame()
+  }
+
+  if (is.nothing(token) && is.nothing(props["token", 1])) {
+    stop(
+      "you must either provide an API token to this constructor, or create a
+      .data.world file in your home directory with your API token"
+    )
+  }
+
+  t <- if (!is.nothing(token))
+    token
+  else
+    (if (is.nothing(props["token", 1]))
+      token
+      else
+        props["token", 1])
+
+  me <- list(
+    token = t,
+    baseDWApiUrl = baseDWApiUrl,
+    baseQueryApiUrl = baseQueryApiUrl,
+    baseDownloadApiUrl = baseDownloadApiUrl
+  )
+  class(me) <- "data.world"
+
+  data.world::set_config(data.world::cfg(auth_token = t))
+
+  return(me)
+  }
 
 #' Execute a SQL or SPARQL query against a data.world client.
 #'
@@ -80,19 +146,20 @@ query.data.world <- function(connection, ...) {
     queryParameters = list(),
     ...) {
     .Deprecated(
+      new = "data.world::query",
       package = "data.world",
-      msg = "The connection argument, of type data.world, is no longer necessary.
-      See ?data.world::query for new usage."
+      msg = "The connection argument, of type data.world,
+      is no longer necessary. See ?data.world::query for new usage."
     )
 
     if (type == "sparql") {
       return(data.world::query(
-        data.world::sparql(query = query, params = queryParameters),
+        data.world::qry_sparql(query_string = query, params = queryParameters),
         dataset
       ))
     } else {
       return(data.world::query(
-        data.world::sql(query = query, params = queryParameters),
+        data.world::qry_sql(query_string = query, params = queryParameters),
         dataset
       ))
     }

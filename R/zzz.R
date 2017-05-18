@@ -17,6 +17,7 @@ This product includes software developed at data.world, Inc.
 https://data.world"
 
 .onLoad <- function(...) {
+
   op <- options()
   op.dw <-
     list(dw.config_path = path.expand(file.path("~", ".dw", "config")))
@@ -30,10 +31,20 @@ https://data.world"
 
 .onAttach <- function(...) {
   # Load dwapi as a result of data.world being attached
-  if (is_attached("dwapi"))
-    return()
+  if (!is_attached("dwapi")) {
+    lapply(c("dwapi"), library, character.only = TRUE, warn.conflicts = FALSE)
+  }
 
-  lapply(c("dwapi"), library, character.only = TRUE, warn.conflicts = FALSE)
+  profile <- Sys.getenv("DW_PROFILE", unset = NA)
+  if (is.na(profile)) {
+    profile <- "DEFAULT"
+  }
+
+  suppressWarnings(
+    data.world::set_config(
+      data.world::cfg_saved(profile = profile)))
+
+  data.world::set_config(data.world::cfg_env())
 
   invisible()
 }

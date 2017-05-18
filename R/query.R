@@ -19,17 +19,17 @@ https://data.world"
 
 #' Execute a query on data.world.
 #'
-#' @param statement Query statement of type sql or sparql.
+#' @param qry Query object of type qry_sql or qry_sparql.
 #' @param ... S3 method specific params.
 #' @return Query results as a data frame.
 #' @seealso \code{\link{sql}} \code{\link{sparql}}
 #' @export
-query <- function(statement, ...) {
+query <- function(qry, ...) {
   UseMethod("query")
 }
 
 #' @export
-query.default <- function(statement, ...) {
+query.default <- function(qry, ...) {
   print("nope.")
 }
 
@@ -41,57 +41,59 @@ query.default <- function(statement, ...) {
 #'     sql_stmt, "jonloyens/an-intro-to-dataworld-dataset")
 #' }
 #' @export
-query.sql <- function(statement, ...) {
+query.sql <- function(qry, ...) {
   # Internal function to help unpack '...' param
-  query_fn <- function(statement, dataset) {
+  # TODO Promote dataset param to S3 generic when query.data.world is removed
+  query_fn <- function(qry, dataset) {
     return(
       dwapi::sql(
         dataset = dataset,
-        query = statement$query,
-        query_params = statement$params
+        query = qry$query_string,
+        query_params = qry$params
       )
     )
   }
 
-  return(query_fn(statement, ...))
+  return(query_fn(qry, ...))
 }
 
 #' @describeIn query Execute a SPARQL query on data.world.
 #' @export
-query.sparql <- function(statement, ...) {
+query.sparql <- function(qry, ...) {
   # Internal function to help unpack '...' param
-  query_fn <- function(statement, dataset) {
+  # TODO Promote dataset param to S3 generic when query.data.world is removed
+  query_fn <- function(qry, dataset) {
     return(
       dwapi::sparql(
         dataset = dataset,
-        query = statement$query,
-        query_params = statement$params
+        query = qry$query_string,
+        query_params = qry$params
       )
     )
   }
-  return(query_fn(statement, ...))
+  return(query_fn(qry, ...))
 }
 
-#' Constructor function for SQL query statements.
+#' Constructor function for SQL queries.
 #'
-#' @param query SQL query.
+#' @param query_string SQL query string.
 #' @param params Sequence of positional query parameters.
 #' @return Object of type \code{sql}.
 #' @export
-sql <- function(query, params = NULL) {
-  me <- list(query = query, params = params)
-  class(me) <- "sql"
+qry_sql <- function(query_string, params = NULL) {
+  me <- list(query_string = query_string, params = params)
+  class(me) <- "qry_sql"
   return(me)
 }
 
-#' Constructor function for SPARQL query statements.
+#' Constructor function for SPARQL queries.
 #'
-#' @param query SPARQL query.
+#' @param query_string SPARQL query string.
 #' @param params Sequence of named query parameters.
 #' @return Object of type \code{sparql}.
 #' @export
-sparql <- function(query, params = NULL) {
-  me <- list(query = query, params = params)
-  class(me) <- "sparql"
+qry_sparql <- function(query_string, params = NULL) {
+  me <- list(query_string = query_string, params = params)
+  class(me) <- "qry_sparql"
   return(me)
 }

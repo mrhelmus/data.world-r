@@ -5,14 +5,44 @@
 \alias{data.world-deprecated}
 \alias{query.data.world}
 \alias{data.world-deprecated-package}
+\alias{data.world-deprecated}
+\alias{data.world}
 \title{Deprecated function(s) in the data.world package}
+\usage{
+data.world(token = NULL, propsfile = sprintf("\%s/.data.world",
+  path.expand("~")), baseDWApiUrl = "https://api.data.world/v0/",
+  baseQueryApiUrl = "https://query.data.world/",
+  baseDownloadApiUrl = "https://download.data.world")
+}
+\arguments{
+\item{token}{your data.world API token (optional, if not present, will be read from properties file)}
+
+\item{propsfile}{a properties file containing configuration for your data.world client (defaults to ~/.data.world)}
+
+\item{baseDWApiUrl}{data.world public api}
+
+\item{baseQueryApiUrl}{data.world query api}
+
+\item{baseDownloadApiUrl}{data.world download api}
+}
+\value{
+a data.world client
+}
 \description{
 These functions have been marked for removal from the data.world package.
+
+data.world client constructor
 }
 \section{Details}{
 
 \tabular{ll}{
-   \code{query.data.world} \tab is now \code{\link{query.sql}}\cr
+   \code{query.data.world} \tab is now \code{\link{query}}\cr
 }
 }
 
+\examples{
+connection1 <- data.world(token = "YOUR_API_TOKEN_HERE")
+}
+\seealso{
+\code{\link{query}}
+}

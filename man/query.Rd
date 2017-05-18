@@ -6,14 +6,14 @@
 \alias{query.sparql}
 \title{Execute a query on data.world.}
 \usage{
-query(statement, ...)
+query(qry, ...)
 
-\method{query}{sql}(statement, ...)
+\method{query}{sql}(qry, ...)
 
-\method{query}{sparql}(statement, ...)
+\method{query}{sparql}(qry, ...)
 }
 \arguments{
-\item{statement}{Query statement of type sql or sparql.}
+\item{qry}{Query object of type qry_sql or qry_sparql.}
 
 \item{...}{S3 method specific params.}
 }
