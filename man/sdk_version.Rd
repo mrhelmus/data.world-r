@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{sdk_version}
 \alias{sdk_version}
-\title{Return the current data.world version}
+\title{Return the current data.world version.}
 \usage{
 sdk_version()
 }
 \value{
-Current package version
+Current package version.
 }
 \description{
-Return the current data.world version
+Return the current data.world version.
 }
 \keyword{internal}

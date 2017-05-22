@@ -16,11 +16,19 @@ permissions and limitations under the License.
 This product includes software developed at data.world, Inc.
 https://data.world"
 
+#' Apply configuration to current R session.
+#'
+#' @param cfg Configuration object.
+#' @examples
+#' data.world::set_config(data.world::cfg_env())
 #' @export
 set_config <- function(cfg) {
   UseMethod("set_config")
 }
 
+#' @describeIn set_config Apply configuration using runtime values.
+#'
+#' @seealso \code{\link{cfg}}
 #' @export
 set_config.default <- function(cfg) {
   if (!is.null(cfg$auth_token)) {
@@ -30,6 +38,9 @@ set_config.default <- function(cfg) {
   invisible()
 }
 
+#' @describeIn set_config Apply configuration using environment variables.
+#'
+#' @seealso \code{\link{cfg_env}}
 #' @export
 set_config.cfg_env <- function(cfg) {
   # delegate to default method
@@ -40,6 +51,9 @@ set_config.cfg_env <- function(cfg) {
   invisible()
 }
 
+#' @describeIn set_config Apply configuration using file-based configuration.
+#'
+#' @seealso \code{\link{cfg_saved}}
 #' @export
 set_config.cfg_saved <- function(cfg) {
   config_path <- getOption("dw.config_path")
@@ -61,6 +75,13 @@ set_config.cfg_saved <- function(cfg) {
   invisible()
 }
 
+#' Construct configuration object using runtime values.
+#'
+#' @param auth_token API authorization token.
+#' @return Object of type \code{cfg}
+#' @examples
+#' runtime_cfg <- data.world::cfg(auth_token = "YOUR_TOKEN")
+#' data.world::set_config(runtime_cfg)
 #' @export
 cfg <- function(auth_token) {
   me <- list(auth_token = auth_token)
@@ -68,6 +89,13 @@ cfg <- function(auth_token) {
   return(me)
 }
 
+#' Construct configuration object using environment variables.
+#'
+#' @param auth_token_var Name of environment variable for API authorization token (default: \code{DW_AUTH_TOKEN}).
+#' @return Object of type \code{cfg_env}
+#' @examples
+#' envvars_cfg <- data.world::cfg_env()
+#' data.world::set_config(envvars_cfg)
 #' @export
 cfg_env <- function(auth_token_var = "DW_AUTH_TOKEN") {
   me <- list(auth_token_var = auth_token_var)
@@ -75,6 +103,13 @@ cfg_env <- function(auth_token_var = "DW_AUTH_TOKEN") {
   return(me)
 }
 
+#' Construct configuration object using file-based configuration.
+#'
+#' @param profile Name of configuration profile (default: \code{DEFAULT}).
+#' @return Object of type \code{cfg_saved}
+#' @examples
+#' saved_cfg <- data.world::cfg_saved()
+#' data.world::set_config(saved_cfg)
 #' @export
 cfg_saved <- function(profile = "DEFAULT") {
   me <- list(profile = profile)
@@ -82,6 +117,15 @@ cfg_saved <- function(profile = "DEFAULT") {
   return(me)
 }
 
+#' Save configuration to file.
+#'
+#' @param auth_token API authorization token.
+#' @param ... Reserved for future configuration parameters.
+#' @param profile Configuration profile.
+#' @return Object of type \code{\link{cfg_saved}}
+#' @examples
+#' saved_cfg <- data.world::save_config(auth_token = "YOUR_TOKEN")
+#' data.world::set_config(saved_cfg)
 #' @export
 save_config <-
   function(auth_token,

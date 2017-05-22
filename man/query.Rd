@@ -2,15 +2,15 @@
 % Please edit documentation in R/query.R
 \name{query}
 \alias{query}
-\alias{query.sql}
-\alias{query.sparql}
+\alias{query.qry_sql}
+\alias{query.qry_sparql}
 \title{Execute a query on data.world.}
 \usage{
 query(qry, ...)
 
-\method{query}{sql}(qry, ...)
+\method{query}{qry_sql}(qry, ...)
 
-\method{query}{sparql}(qry, ...)
+\method{query}{qry_sparql}(qry, ...)
 }
 \arguments{
 \item{qry}{Query object of type qry_sql or qry_sparql.}
@@ -25,9 +25,9 @@ Execute a query on data.world.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{sql}: Execute a SQL query on data.world.
+\item \code{qry_sql}: Execute a SQL query on data.world.
 
-\item \code{sparql}: Execute a SPARQL query on data.world.
+\item \code{qry_sparql}: Execute a SPARQL query on data.world.
 }}
 
 \examples{

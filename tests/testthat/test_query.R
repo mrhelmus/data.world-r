@@ -16,55 +16,48 @@ permissions and limitations under the License.
 This product includes software developed at data.world, Inc.
 https://data.world"
 
-test_that("sparql query making the correct HTTR request" , {
-  sqlQuery = "SELECT * FROM TableName LIMIT 10"
-  type = "sparql"
-  dataset = "ownerid/datasetid"
-  mockResponseLocalContentPath = "resources/file1.csv"
-  queryParameters = list(key1="value1", "?key2"=1L, "?key3"=1, "?key4"=TRUE, "?key5"=1.5)
-  response <- with_mock(
-    `httr::GET` = function(url, query, header , userAgent)  {
-      expect_equal(url,
-                   sprintf("https://query.data.world/%s/%s", type, dataset))
-      expect_equal(header$headers[["Authorization"]], "Bearer API_TOKEN")
-      expect_equal(header$headers[["Accept"]], "text/csv")
-      expect_equal(query[["query"]], sqlQuery)
-      expect_equal(query[["parameters"]], "key1=\"value1\",?key2=\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>,?key3=\"1\"^^<http://www.w3.org/2001/XMLSchema#decimal>,?key4=\"TRUE\"^^<http://www.w3.org/2001/XMLSchema#boolean>,?key5=\"1.5\"^^<http://www.w3.org/2001/XMLSchema#decimal>")
-      expect_equal(userAgent$options$useragent, data.world::userAgent())
-      return(successMessageResponseWithContent(mockResponseLocalContentPath, "application/csv"))
-    },
-    `mime::guess_type` = function(...)
-      NULL,
-    data.world::query(data.world(token = "API_TOKEN"), dataset = dataset , query = sqlQuery , type = type, queryParameters = queryParameters)
-  )
-  expect_equal(is.data.frame(response), TRUE)
-  expected = read.csv(mockResponseLocalContentPath)
-  expect_equal(all(expected == as.data.frame(response)), TRUE)
-})
+testthat::test_that("SQL query making correct calls",
+  {
+    sql_query = "SELECT * FROM TableName LIMIT 10"
+    params = list("value1", 1L, 1, TRUE, 1.5)
+    dataset_key = "ownerid/datasetid"
+    mock_response = readr::read_csv("resources/sample.csv")
+    testthat::with_mock(
+      `dwapi::sql` = function(dataset, query, query_params) {
+        testthat::expect_equal(dataset, dataset_key)
+        testthat::expect_equal(query, sql_query)
+        testthat::expect_equal(query_params, params)
+        return(mock_response)
+      },
+      {
+        ret <- data.world::query(qry_sql(sql_query, params = params), dataset_key)
+        testthat::expect_equal(ret, mock_response)
+      }
+    )
+  })
 
-
-test_that("sql query making the correct HTTR request" , {
-  sqlQuery = "SELECT * FROM TableName LIMIT 10"
-  type = "sql"
-  dataset = "ownerid/datasetid"
-  mockResponseLocalContentPath = "resources/file1.csv"
-  queryParameters = list("value1", 1L, 1, TRUE, 1.5)
-  response <- with_mock(
-    `httr::GET` = function(url, query, header , userAgent)  {
-      expect_equal(url,
-                   sprintf("https://query.data.world/%s/%s", type, dataset))
-      expect_equal(header$headers[["Authorization"]], "Bearer API_TOKEN")
-      expect_equal(header$headers[["Accept"]], "text/csv")
-      expect_equal(query[["query"]], sqlQuery)
-      expect_equal(query[["parameters"]], "$data_world_param0=\"value1\",$data_world_param1=\"1\"^^<http://www.w3.org/2001/XMLSchema#integer>,$data_world_param2=\"1\"^^<http://www.w3.org/2001/XMLSchema#decimal>,$data_world_param3=\"TRUE\"^^<http://www.w3.org/2001/XMLSchema#boolean>,$data_world_param4=\"1.5\"^^<http://www.w3.org/2001/XMLSchema#decimal>")
-      expect_equal(userAgent$options$useragent, data.world::userAgent())
-      return(successMessageResponseWithContent(mockResponseLocalContentPath, "application/csv"))
-    },
-    `mime::guess_type` = function(...)
-      NULL,
-    data.world::query(data.world(token = "API_TOKEN"), dataset = dataset , query = sqlQuery , type = type, queryParameters = queryParameters)
-  )
-  expect_equal(is.data.frame(response), TRUE)
-  expected = read.csv(mockResponseLocalContentPath)
-  expect_equal(all(expected == as.data.frame(response)), TRUE)
-})
+testthat::test_that("SPARQL query making correct calls",
+  {
+    sql_query = "SELECT * WHERE { ?s ?p ?o }"
+    params = list(
+      key1 = "value1",
+      "?key2" = 1L,
+      "?key3" = 1,
+      "?key4" = TRUE,
+      "?key5" = 1.5
+    )
+    dataset_key = "ownerid/datasetid"
+    mock_response = readr::read_csv("resources/sample.csv")
+    testthat::with_mock(
+      `dwapi::sparql` = function(dataset, query, query_params) {
+        testthat::expect_equal(dataset, dataset_key)
+        testthat::expect_equal(query, sql_query)
+        testthat::expect_equal(query_params, params)
+        return(mock_response)
+      },
+      {
+        ret <- data.world::query(qry_sparql(sql_query, params = params), dataset_key)
+        testthat::expect_equal(ret, mock_response)
+      }
+    )
+  })

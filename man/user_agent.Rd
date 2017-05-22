@@ -2,14 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{user_agent}
 \alias{user_agent}
-\title{Return the data.world user-agent}
+\title{Return the data.world user-agent.}
 \usage{
 user_agent()
 }
 \value{
-User-agent string
+User-agent string.
 }
 \description{
-Return the data.world user-agent
+Return the data.world user-agent.
 }
 \keyword{internal}

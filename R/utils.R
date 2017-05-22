@@ -16,8 +16,8 @@ permissions and limitations under the License.
 This product includes software developed at data.world, Inc.
 https://data.world"
 
-#' Return the current data.world version
-#' @return Current package version
+#' Return the current data.world version.
+#' @return Current package version.
 #' @keywords internal
 sdk_version <- function() {
   is.nothing <- function(x)
@@ -30,17 +30,17 @@ sdk_version <- function() {
   ret
 }
 
-#' Return the data.world user-agent
-#' @return User-agent string
+#' Return the data.world user-agent.
+#' @return User-agent string.
 #' @keywords internal
 user_agent <- function() {
   ret <- sprintf("data.world-R - %s", sdk_version())
   ret
 }
 
-#' Extract the dataset key from URL or as provided
-#' @param tentative_key key or URL
-#' @return dataset key extracted form URL or as provided
+#' Extract the dataset key from URL or as provided.
+#' @param tentative_key key or URL.
+#' @return dataset key extracted form URL or as provided.
 #' @keywords internal
 extract_dataset_key <- function(tentative_key) {
   url <- httr::parse_url(tentative_key)

@@ -2,17 +2,17 @@
 % Please edit documentation in R/utils.R
 \name{extract_dataset_key}
 \alias{extract_dataset_key}
-\title{Extract the dataset key from URL or as provided}
+\title{Extract the dataset key from URL or as provided.}
 \usage{
 extract_dataset_key(tentative_key)
 }
 \arguments{
-\item{tentative_key}{key or URL}
+\item{tentative_key}{key or URL.}
 }
 \value{
-dataset key extracted form URL or as provided
+dataset key extracted form URL or as provided.
 }
 \description{
-Extract the dataset key from URL or as provided
+Extract the dataset key from URL or as provided.
 }
 \keyword{internal}

@@ -41,7 +41,7 @@ query.default <- function(qry, ...) {
 #'     sql_stmt, "jonloyens/an-intro-to-dataworld-dataset")
 #' }
 #' @export
-query.sql <- function(qry, ...) {
+query.qry_sql <- function(qry, ...) {
   # Internal function to help unpack '...' param
   # TODO Promote dataset param to S3 generic when query.data.world is removed
   query_fn <- function(qry, dataset) {
@@ -59,7 +59,7 @@ query.sql <- function(qry, ...) {
 
 #' @describeIn query Execute a SPARQL query on data.world.
 #' @export
-query.sparql <- function(qry, ...) {
+query.qry_sparql <- function(qry, ...) {
   # Internal function to help unpack '...' param
   # TODO Promote dataset param to S3 generic when query.data.world is removed
   query_fn <- function(qry, dataset) {

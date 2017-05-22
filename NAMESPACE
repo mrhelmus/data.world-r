@@ -2,8 +2,8 @@
 
 S3method(query,data.world)
 S3method(query,default)
-S3method(query,sparql)
-S3method(query,sql)
+S3method(query,qry_sparql)
+S3method(query,qry_sql)
 S3method(set_config,cfg_env)
 S3method(set_config,cfg_saved)
 S3method(set_config,default)

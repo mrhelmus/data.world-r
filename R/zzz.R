@@ -16,8 +16,9 @@ permissions and limitations under the License.
 This product includes software developed at data.world, Inc.
 https://data.world"
 
+#' Set up default options
+#' @keywords internal
 .onLoad <- function(...) {
-
   op <- options()
   op.dw <-
     list(dw.config_path = path.expand(file.path("~", ".dw", "config")))
@@ -29,6 +30,8 @@ https://data.world"
   invisible()
 }
 
+#' Apply configuration from file or envvars and load dwapi
+#' @keywords internal
 .onAttach <- function(...) {
   # Load dwapi as a result of data.world being attached
   if (!is_attached("dwapi")) {
@@ -49,6 +52,8 @@ https://data.world"
   invisible()
 }
 
+#' Determine if library is already attached
+#' @keywords internal
 is_attached <- function(x) {
   paste0("package:", x) %in% search()
 }
